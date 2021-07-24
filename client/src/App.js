@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getWeb3, getWallet } from './utils.js';
 import Header from './Header.js'
 import NewTransfer from './NewTransfer';
+import TransferList from './TransferList';
 
 function App() {
   const [web3, setWeb3] = useState(undefined);
@@ -9,6 +10,7 @@ function App() {
   const [wallet, setWallet] = useState(undefined);
   const [approvers, setApprovers] = useState([]);
   const [quorum, setQuorum] = useState(undefined);
+  const [transfers, setTransfers] = useState([]);
 
   useEffect(() => {
     const init = async () => {
@@ -17,12 +19,14 @@ function App() {
       const wallet = await getWallet(web3);
       const approvers = await wallet.methods.getApprovers().call();
       const quorum = await wallet.methods.quorum().call();
+      const transfers = await wallet.methods.getTransfers().call();
 
       setWeb3(web3);
       setAccounts(accounts);
       setWallet(wallet);
       setApprovers(approvers);
       setQuorum(quorum);
+      setTransfers(transfers);
     };
     init();
   }, []);
@@ -31,6 +35,12 @@ function App() {
     wallet.methods
       .createTransfer(transfer.amount, transfer.to)
       .send({ from: accounts[0] });
+  };
+
+  const approveTransfer = transferId => {
+    wallet.methods
+      .approveTransfer(transferId)
+      .send({from: accounts[0]});
   };
 
   if(
@@ -48,6 +58,7 @@ function App() {
       Multisig Dapp
       <Header approvers={approvers} quorum={quorum} />
       <NewTransfer createTransfer={createTransfer} />
+      <TransferList transfers={transfers} approveTransfer={approveTransfer} />
     </div>
   );
 }
