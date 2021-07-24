@@ -19,14 +19,14 @@ function App() {
       const wallet = await getWallet(web3);
       const approvers = await wallet.methods.getApprovers().call();
       const quorum = await wallet.methods.quorum().call();
-      const transfers = await wallet.methods.getTransfers().call();
+      const transferList = await wallet.methods.getTransfers().call();
 
       setWeb3(web3);
       setAccounts(accounts);
       setWallet(wallet);
       setApprovers(approvers);
       setQuorum(quorum);
-      setTransfers(transfers);
+      setTransfers(transferList);
     };
     init();
   }, []);

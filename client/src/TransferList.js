@@ -16,15 +16,17 @@ function TransferList({ transfers, approveTransfer }) {
                 </thead>
                 <tbody>
                     {transfers.map(transfer => {
-                        <tr key={transfer.id}>
-                            <td>{transfer.amount}</td>
-                            <td>{transfer.to}</td>
-                            <td>
-                                {transfer.approvals}
-                                <button onClick={() => approveTransfer(transfer.id)}> Approve </button>    
-                            </td>
-                            <td>{transfer.sent ? 'yes' : 'no'}</td>
-                        </tr>
+                        return (
+                            <tr key={transfer.id}>
+                                <td>{transfer.amount}</td>
+                                <td>{transfer.to}</td>
+                                <td>
+                                    {transfer.approvals}
+                                    <button onClick={() => approveTransfer(transfer.id)}> Approve </button>    
+                                </td>
+                                <td>{transfer.sent ? 'yes' : 'no'}</td>
+                            </tr>
+                        );
                     })}
                 </tbody>
             </table>
