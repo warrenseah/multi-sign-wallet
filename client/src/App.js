@@ -29,18 +29,26 @@ function App() {
       setTransfers(transferList);
     };
     init();
-  }, []);
+  }, [transfers]);
 
-  const createTransfer = transfer => {
-    wallet.methods
+  const createTransfer = async (transfer) => {
+    await wallet.methods
       .createTransfer(transfer.amount, transfer.to)
       .send({ from: accounts[0] });
+    await updateTransferList();
   };
 
-  const approveTransfer = transferId => {
-    wallet.methods
+  const approveTransfer = async (transferId) => {
+    await wallet.methods
       .approveTransfer(transferId)
       .send({from: accounts[0]});
+    await updateTransferList();
+
+  };
+
+  const updateTransferList = async () => {
+    const newTransferList = await wallet.methods.getTransfers().call();
+    setTransfers(newTransferList);
   };
 
   if(
