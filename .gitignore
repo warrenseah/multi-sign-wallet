@@ -60,5 +60,6 @@ $RECYCLE.BIN/
 # User added settings
 node_modules/
 client/src/contracts/
+.secrets.json
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,windows
