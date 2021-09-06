@@ -29,7 +29,7 @@ function App() {
       setTransfers(transferList);
     };
     init();
-  }, [transfers]);
+  }, []);
 
   const createTransfer = async (transfer) => {
     await wallet.methods
