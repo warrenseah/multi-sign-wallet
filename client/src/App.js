@@ -29,6 +29,16 @@ function App() {
       setTransfers(transferList);
     };
     init();
+
+    const listenAcctChange = async () => {
+      window.ethereum.on('accountsChanged', function (accounts) {
+        // time to reload 
+        setAccounts(accounts);
+        console.log('Main account: ', accounts[0]);
+      });
+    };
+
+    listenAcctChange();
   }, []);
 
   const createTransfer = async (transfer) => {
