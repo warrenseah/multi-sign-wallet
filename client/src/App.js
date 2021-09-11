@@ -11,6 +11,7 @@ function App() {
   const [approvers, setApprovers] = useState([]);
   const [quorum, setQuorum] = useState(undefined);
   const [transfers, setTransfers] = useState([]);
+  const [approveList, setApproveList] = useState([]);
 
   useEffect(() => {
     const init = async () => {
@@ -21,25 +22,35 @@ function App() {
       const quorum = await wallet.methods.quorum().call();
       const transferList = await wallet.methods.getTransfers().call();
 
+      const approvingList = [];
+      for(let i = 0; i < Object.keys(transferList).length; i++) {
+        const approval = await wallet.methods.approvals(accounts[0], i).call();
+        approvingList[i] = approval;
+      }
+
       setWeb3(web3);
       setAccounts(accounts);
       setWallet(wallet);
       setApprovers(approvers);
       setQuorum(quorum);
       setTransfers(transferList);
+      setApproveList(approvingList);
     };
     init();
+  });
 
-    const listenAcctChange = async () => {
-      window.ethereum.on('accountsChanged', function (accounts) {
-        // time to reload 
-        setAccounts(accounts);
-        console.log('Main account: ', accounts[0]);
-      });
-    };
+  window.ethereum.on('accountsChanged', async function (accounts) {
+    // time to reload 
+    setAccounts(accounts);
+    console.log('Main account: ', accounts[0]);
 
-    listenAcctChange();
-  }, []);
+    const approvingList = [];
+      for(let i = 0; i < Object.keys(transfers).length; i++) {
+        const approval = await wallet.methods.approvals(accounts[0], i).call();
+        approvingList[i] = approval;
+      }
+      setApproveList(approvingList);
+  });
 
   const createTransfer = async (transfer) => {
     await wallet.methods
@@ -76,7 +87,7 @@ function App() {
       Multisig Dapp
       <Header approvers={approvers} quorum={quorum} />
       <NewTransfer createTransfer={createTransfer} />
-      <TransferList transfers={transfers} approveTransfer={approveTransfer} />
+      <TransferList transfers={transfers} approveTransfer={approveTransfer} approveList={approveList} />
     </div>
   );
 }
